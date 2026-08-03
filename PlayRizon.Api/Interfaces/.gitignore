@@ -1,0 +1,10 @@
+# .NET
+**/bin/
+**/obj/
+
+# Environment files
+client/owner/.env
+client/user/.env
+
+# Node
+**/node_modules/
