@@ -103,8 +103,8 @@ export default function useAddTurf() {
     address: data.location,
     pricePerHour: Number(data.pricePerHour),
     imageUrl: "",
-    latitude: 0,
-    longitude: 0,
+    latitude: 18.5204,
+longitude: 73.8567,
   };
 
   console.log("Payload:", payload);

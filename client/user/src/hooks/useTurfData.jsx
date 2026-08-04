@@ -14,31 +14,22 @@ const useTurfData = () => {
         dispatch(setLoading(true));
 
         // Change this endpoint if you create another public endpoint later
-        const response = await axiosInstance.get("/api/Turf/nearby?lat=18.5204&lng=73.8567&radius=50");
-
+const response = await axiosInstance.get("/api/Turf");
         const mappedTurfs = response.data.map((turf) => ({
-          id: turf.id,
-          _id: turf.id,
-
-          name: turf.name,
-          description: turf.description ?? "",
-
-          image: turf.imageUrl || "/banner-1.png",
-
-          sportTypes: [turf.sport],
-
-          location: turf.address,
-
-          pricePerHour: turf.pricePerHour,
-
-          openTime: "06:00 AM",
-          closeTime: "11:00 PM",
-
-          latitude: turf.latitude,
-          longitude: turf.longitude,
-
-          isAvailable: turf.isAvailable,
-        }));
+  id: turf.id,
+  _id: turf.id,
+  name: turf.name,
+  description: turf.description ?? "",
+  image: turf.imageUrl || "/banner-1.png",
+  sportTypes: [turf.sport],
+  location: turf.address,
+  pricePerHour: turf.pricePerHour,
+  openTime: turf.openTime,
+  closeTime: turf.closeTime,
+  latitude: turf.latitude,
+  longitude: turf.longitude,
+  isAvailable: turf.isAvailable,
+}));
 
         dispatch(setTurfs(mappedTurfs));
       } catch (err) {

@@ -68,6 +68,8 @@ namespace PlayRizon.Api.Controllers
         }
         [HttpGet]
 [Authorize(Roles = "Admin")]
+[HttpGet]
+[AllowAnonymous]
 public async Task<IActionResult> GetAll()
 {
     var turfs = await _turfService.GetAllAsync();

@@ -35,17 +35,18 @@ namespace PlayRizon.Api.Services
     Sport = dto.Sport,
     Address = dto.Address,
     PricePerHour = dto.PricePerHour,
-
     OpenTime = dto.OpenTime,
     CloseTime = dto.CloseTime,
-
     ImageUrl = dto.ImageUrl,
+
     Latitude = dto.Latitude,
     Longitude = dto.Longitude,
+
+    IsAvailable = true,
+
     CreatedAt = DateTime.UtcNow,
     OwnerId = owner.Id
 };
-
             await _turfRepository.AddAsync(turf);
 
             return Map(turf);

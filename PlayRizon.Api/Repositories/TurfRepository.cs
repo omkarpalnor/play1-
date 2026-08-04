@@ -60,7 +60,7 @@ namespace PlayRizon.Api.Repositories
     double radiusKm)
         {
             var turfs = await _context.Turfs
-                .Where(t => t.IsAvailable)
+                // .Where(t => t.IsAvailable)
                 .ToListAsync();
 
             return turfs.Where(t =>

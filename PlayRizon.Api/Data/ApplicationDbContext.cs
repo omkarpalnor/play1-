@@ -35,7 +35,9 @@ namespace PlayRizon.Api.Data
                 .WithMany()
                 .HasForeignKey(r => r.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
-
+modelBuilder.Entity<User>()
+    .HasIndex(u => u.Email)
+    .IsUnique();
             // Decimal precision
             modelBuilder.Entity<Booking>()
                 .Property(b => b.Amount)

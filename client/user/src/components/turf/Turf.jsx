@@ -1,12 +1,17 @@
-import { useState } from "react";
+// import { useState } from "react";
 import TurfCard from "./TurfCard.jsx";
 import TurfCardSkeleton from "../ui/TurfCardSkeleton.jsx";
 import useTurfData from "../../hooks/useTurfData.jsx";
 import SearchTurf from "../search/SearchTurf.jsx";
+import { useState, useEffect } from "react";
 
 const Turf = () => {
   const { turfs, loading, error } = useTurfData();
-  const [filteredTurfs, setFilteredTurfs] = useState(turfs);
+ const [filteredTurfs, setFilteredTurfs] = useState([]);
+
+useEffect(() => {
+  setFilteredTurfs(turfs);
+}, [turfs]);
 
   const handleSearch = (searchTerm) => {
     const filtered = turfs.filter(
@@ -21,8 +26,8 @@ const Turf = () => {
   };
 
   if (error) {
-    return <div>Error: {error.message}</div>;
-  }
+  return <div className="text-red-500 p-4">Error: {error}</div>;
+}
 
   return (
     <div className="container mx-auto px-4 py-8 ">
