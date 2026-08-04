@@ -14,6 +14,7 @@ namespace PlayRizon.Api.Interfaces
 
         Task<bool> DeleteAsync(Guid id, Guid ownerId);
         Task<List<TurfResponseDto>> GetAllAsync();
+        Task<TimeSlotResponseDto?> GetTimeSlotsAsync(Guid turfId, DateTime date);
 
         Task<List<TurfResponseDto>> GetNearbyTurfsAsync(
     double latitude,

@@ -135,7 +135,7 @@ export default function AuthNavbar() {
               <Link to="/auth">Home</Link>
             </li>
             <li>
-              <Link to="/auth/turfs">Arenas</Link>
+              <Link to="/auth/turfs">turf</Link>
             </li>
               <li>
     <Link to="/tournaments">Tournaments</Link>

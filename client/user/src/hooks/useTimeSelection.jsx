@@ -21,10 +21,19 @@ const useTimeSelection = (
   timeSlots,
   setDuration
 ) => {
+  // Debug whenever timeSlots changes
+  useEffect(() => {
+    console.log("timeSlots changed:", timeSlots);
+  }, [timeSlots]);
+
+  // Generate available time slots
   const availableTimes = useMemo(() => {
-    if (!timeSlots.openTime || !timeSlots.closeTime) return [];
+    if (!timeSlots?.openTime || !timeSlots?.closeTime) {
+      return [];
+    }
 
     const times = [];
+
     const openTime = parse(timeSlots.openTime, "hh:mm a", new Date());
     const closeTime = parse(timeSlots.closeTime, "hh:mm a", new Date());
 
@@ -32,21 +41,30 @@ const useTimeSelection = (
 
     while (isBefore(currentTime, closeTime)) {
       times.push(format(currentTime, "hh:mm a"));
-      // currentTime = addMinutes(currentTime, 60);
       currentTime = addHours(currentTime, 1);
     }
 
+    console.log("Generated Times:", times);
+
     return times;
-  }, [timeSlots.openTime, timeSlots.closeTime]);
+  }, [timeSlots]);
 
   const handleTimeSelection = (time) => {
     setSelectedStartTime(time);
     setDuration(1);
   };
 
+  const isSameTime = (time1, time2) => {
+    return (
+      time1.getHours() === time2.getHours() &&
+      time1.getMinutes() === time2.getMinutes()
+    );
+  };
+
   const isTimeSlotBooked = (time) => {
     const timeToCheck = parse(time, "hh:mm a", new Date());
-    return bookedTime.some((booking) => {
+
+    return (bookedTime || []).some((booking) => {
       const bookingStart = parse(booking.startTime, "hh:mm a", new Date());
       let bookingEnd = parse(booking.endTime, "hh:mm a", new Date());
 
@@ -62,37 +80,38 @@ const useTimeSelection = (
     });
   };
 
-  const isSameTime = (time1, time2) => {
-    return (
-      time1.getHours() === time2.getHours() &&
-      time1.getMinutes() === time2.getMinutes()
-    );
-  };
+  const fetchByDate = useCallback(
+    async (currentSelectedDate, turfId) => {
+      const date = format(currentSelectedDate, "yyyy-MM-dd");
 
-  const fetchByDate = useCallback(async (currentSelectedDate, turfId) => {
-    const date = format(currentSelectedDate, "yyyy-MM-dd");
+      try {
+        const { data } = await axiosInstance.get(
+          `/api/Turf/timeslot?date=${date}&turfId=${turfId}`
+        );
 
-    try {
-      const response = await axiosInstance.get(
-        `/api/user/turf/timeslot?date=${date}&turfId=${turfId}`
-      );
-      const result = await response.data;
-      setTimeSlots(result.timeSlots);
-      setPricePerHour(result.timeSlots.pricePerHour);
+        console.log("API Response:", data);
 
-      const formattedBookedTime = result.bookedTime.map((booking) => ({
-        ...booking,
-        startTime: format(parseISO(booking.startTime), "hh:mm a"),
-        endTime: format(parseISO(booking.endTime), "hh:mm a"),
-      }));
-      setBookedTime(formattedBookedTime);
-    } catch (error) {
-      console.log("Error in fetchByDate", error.message);
-    }
-  }, [setBookedTime, setPricePerHour, setTimeSlots]);
+        setTimeSlots(data.timeSlots);
+        setPricePerHour(data.timeSlots.pricePerHour);
+
+        const formattedBookedTime = (data.bookedTime || []).map((booking) => ({
+          ...booking,
+          startTime: format(parseISO(booking.startTime), "hh:mm a"),
+          endTime: format(parseISO(booking.endTime), "hh:mm a"),
+        }));
+
+        setBookedTime(formattedBookedTime);
+      } catch (error) {
+        console.error("Error fetching timeslots:", error);
+      }
+    },
+    [setBookedTime, setPricePerHour, setTimeSlots]
+  );
 
   useEffect(() => {
-    fetchByDate(selectedDate, turfId);
+    if (turfId) {
+      fetchByDate(selectedDate, turfId);
+    }
   }, [fetchByDate, selectedDate, turfId]);
 
   return {

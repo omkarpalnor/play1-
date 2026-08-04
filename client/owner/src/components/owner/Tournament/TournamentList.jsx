@@ -87,7 +87,7 @@ const filteredTournaments = useMemo(() => {
   const confirmDelete = async () => {
     try {
       await axiosInstance.delete(
-        `/api/owner/tournaments/${selectedTournament._id}`
+        `/api/owner/tournaments/${selectedTournament.id}`
       );
 
       toast.success("Tournament Deleted");
@@ -211,7 +211,7 @@ const filteredTournaments = useMemo(() => {
         <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
           {filteredTournaments.map((item) => (
             <TournamentCard
-              key={item._id}
+              key={item.id}
               tournament={item}
               onEdit={handleEdit}
               onDelete={handleDelete}

@@ -12,20 +12,32 @@ const TournamentRegistrations = () => {
   const [registrations, setRegistrations] = useState([]);
 
   useEffect(() => {
-    fetchRegistrations();
-  }, []);
+    if (id) {
+      fetchRegistrations();
+    }
+  }, [id]);
 
   const fetchRegistrations = async () => {
     try {
+      setLoading(true);
+
       const { data } = await axiosInstance.get(
         `/api/owner/tournament-registrations/${id}`
       );
 
+      console.log("Registrations Response:", data);
+
       if (data.success) {
-        setRegistrations(data.registrations);
+        setRegistrations(data.registrations || data.data || []);
+      } else {
+        setRegistrations([]);
       }
     } catch (error) {
-      toast.error("Unable to fetch registrations");
+      console.error(error);
+      toast.error(
+        error.response?.data?.message || "Unable to fetch registrations"
+      );
+      setRegistrations([]);
     } finally {
       setLoading(false);
     }
@@ -33,42 +45,48 @@ const TournamentRegistrations = () => {
 
   const approveRegistration = async (registrationId) => {
     try {
-      await axiosInstance.patch(
+      const { data } = await axiosInstance.patch(
         `/api/owner/tournament-registrations/approve/${registrationId}`
       );
 
-      toast.success("Registration Approved");
-
-      fetchRegistrations();
-    } catch {
-      toast.error("Approval failed");
+      if (data.success) {
+        toast.success(data.message || "Registration Approved");
+        fetchRegistrations();
+      }
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message || "Approval failed"
+      );
     }
   };
 
   const rejectRegistration = async (registrationId) => {
     try {
-      await axiosInstance.patch(
+      const { data } = await axiosInstance.patch(
         `/api/owner/tournament-registrations/reject/${registrationId}`
       );
 
-      toast.success("Registration Rejected");
-
-      fetchRegistrations();
-    } catch {
-      toast.error("Rejection failed");
+      if (data.success) {
+        toast.success(data.message || "Registration Rejected");
+        fetchRegistrations();
+      }
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message || "Rejection failed"
+      );
     }
   };
 
-  if (loading)
+  if (loading) {
     return (
       <div className="p-10 text-center">
         Loading...
       </div>
     );
+  }
 
   return (
     <div className="p-8">
-
       <h1 className="text-3xl font-bold mb-8">
         Tournament Registrations
       </h1>
@@ -79,19 +97,16 @@ const TournamentRegistrations = () => {
         </div>
       ) : (
         <div className="grid lg:grid-cols-2 gap-6">
-
           {registrations.map((registration) => (
             <RegistrationCard
-              key={registration._id}
+              key={registration.id}
               registration={registration}
               onApprove={approveRegistration}
               onReject={rejectRegistration}
             />
           ))}
-
         </div>
       )}
-
     </div>
   );
 };

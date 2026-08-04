@@ -105,7 +105,7 @@ import {
         <div className="flex gap-3 mt-6">
 
           <button
-           onClick={() => onEdit(tournament._id)}
+           onClick={() => onEdit(tournament.id)}
             className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg flex items-center justify-center gap-2"
           >
             <Pencil size={18} />
@@ -119,10 +119,15 @@ import {
             <Trash2 size={18} />
             Delete
           </button>
-        <button
-  onClick={() =>
-    navigate(`/owner/tournaments/${tournament._id}/registrations`)
-  }
+          
+       <button
+  onClick={() => {
+    console.log(tournament);
+    console.log(tournament.id);
+    console.log(tournament.tournamentId);
+
+    navigate(`/owner/tournaments/${tournament.id}/registrations`);
+  }}
   className="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg"
 >
   View Registrations

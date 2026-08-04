@@ -28,8 +28,8 @@ const TournamentDetails = () => {
       );
 
       if (data.success) {
-        setTournament(data.tournament);
-      }
+    setTournament(data.data);
+}
     } catch (error) {
       toast.error("Unable to fetch tournament");
     } finally {
@@ -55,11 +55,11 @@ const TournamentDetails = () => {
     <div className="max-w-6xl mx-auto p-6">
 
       <img
-        src={
-          tournament.banner
-            ? tournament.banner
-            : "https://placehold.co/1200x500"
-        }
+       src={
+  tournament.banner
+    ? `https://localhost:7158/${tournament.banner}`
+    : "https://placehold.co/1200x500"
+}
         alt={tournament.name}
         className="w-full h-96 rounded-xl object-cover"
       />
@@ -113,8 +113,7 @@ const TournamentDetails = () => {
 
               <p className="flex items-center gap-3">
                 <Users size={18} />
-                {tournament.registeredCount}/
-                {tournament.maxTeams} Teams
+                {tournament.registeredTeams}/{tournament.maxTeams} Teams
               </p>
 
               <p className="flex items-center gap-3">

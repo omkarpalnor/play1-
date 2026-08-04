@@ -20,7 +20,7 @@ const ViewRosterModal = ({ isOpen, onClose, post, currentUserId, onUpdated, toke
   // Filter teammates to exclude the current logged-in user
   const otherTeammates = (post.joinedPlayers || []).filter((p) => {
     const playerObj = typeof p.user === "object" ? p.user : null;
-    const playerId = playerObj?._id || p.user || p;
+    const playerId = playerObj?.id || p.user || p;
     return String(playerId).trim() !== String(currentUserId).trim();
   });
 
@@ -30,7 +30,7 @@ const ViewRosterModal = ({ isOpen, onClose, post, currentUserId, onUpdated, toke
 
     try {
       await axios.post(
-        `http://localhost:5000/api/user/matchmaking/leave/${post._id}`,
+        `http://localhost:5000/api/user/matchmaking/leave/${post.id}`,
         {},
         {
           headers: {

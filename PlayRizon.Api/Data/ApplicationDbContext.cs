@@ -18,17 +18,18 @@ namespace PlayRizon.Api.Data
         public DbSet<Matchmaking> Matchmakings { get; set; }
         public DbSet<Owner> Owners { get; set; }
         public DbSet<TournamentRegistration> TournamentRegistrations { get; set; }
+        
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<TournamentRegistration>()
+           modelBuilder.Entity<TournamentRegistration>()
     .HasOne(r => r.Tournament)
-    .WithMany()
+    .WithMany(t => t.Registrations)
     .HasForeignKey(r => r.TournamentId)
     .OnDelete(DeleteBehavior.Cascade);
-
+    
             modelBuilder.Entity<TournamentRegistration>()
                 .HasOne(r => r.User)
                 .WithMany()

@@ -89,7 +89,7 @@ const buildRescheduleNotifications = (bookings = []) =>
 
       if (reschedule.status === "requested") {
         return {
-          id: `user-reschedule-requested-${booking._id}`,
+          id: `user-reschedule-requested-${booking.id}`,
           title: `Reschedule request sent for ${turfName}`,
           message: `Your request to move the booking to ${requestedDate} from ${requestedStart} to ${requestedEnd} is waiting for owner approval.`,
           type: "account",
@@ -104,7 +104,7 @@ const buildRescheduleNotifications = (bookings = []) =>
 
       if (reschedule.status === "completed") {
         return {
-          id: `user-reschedule-approved-${booking._id}`,
+          id: `user-reschedule-approved-${booking.id}`,
           title: `Reschedule approved for ${turfName}`,
           message: `Your booking has been updated to ${currentDate} from ${currentStart} to ${currentEnd}.${reschedule.ownerNotes ? ` Owner note: ${reschedule.ownerNotes}` : ""}`,
           type: "booking",
@@ -119,7 +119,7 @@ const buildRescheduleNotifications = (bookings = []) =>
 
       if (reschedule.status === "rejected") {
         return {
-          id: `user-reschedule-rejected-${booking._id}`,
+          id: `user-reschedule-rejected-${booking.id}`,
           title: `Reschedule rejected for ${turfName}`,
           message: `Your booking remains on ${currentDate} from ${currentStart} to ${currentEnd}.${reschedule.ownerNotes ? ` Owner note: ${reschedule.ownerNotes}` : ""}`,
           type: "account",
@@ -147,7 +147,7 @@ const buildBookingNotifications = (bookings = []) =>
       const isCancelled = status === "cancelled";
 
       return {
-        id: `user-booking-${booking._id}`,
+        id: `user-booking-${booking.id}`,
         title: isCancelled
           ? `Booking cancelled for ${booking.turf?.name || "your turf"}`
           : `Booking confirmed for ${booking.turf?.name || "your turf"}`,
@@ -179,7 +179,7 @@ const buildUpcomingNotifications = (bookings = []) =>
       const startTime = formatTimeLabel(booking.timeSlot.startTime);
 
       return {
-        id: `user-upcoming-${booking._id}`,
+        id: `user-upcoming-${booking.id}`,
         title: "Upcoming booking reminder",
         message: `${booking.turf?.name || "Your turf"} is booked for ${slotDate} at ${startTime}. Reach a little early for a smoother check-in.`,
         type: "booking",
@@ -202,7 +202,7 @@ const buildCouponNotifications = (coupons = []) =>
     const scope = coupon.turf?.name ? ` for ${coupon.turf.name}` : "";
 
     return {
-      id: `user-coupon-${coupon._id}`,
+      id: `user-coupon-${coupon.id}`,
       title: `New coupon added: ${coupon.code}`,
       message: `${title}${scope} is now active with ${discountText}. ${coupon.description || "Use it on your next booking."}`,
       type: "offer",
@@ -224,7 +224,7 @@ const buildMatchmakingNotifications = (matches = [], currentUserId = "") => {
       const rawUserStr = window.localStorage.getItem("user");
       if (rawUserStr) {
         const parsedUser = JSON.parse(rawUserStr);
-        activeUserId = String(parsedUser?._id || parsedUser?.id || "").trim();
+        activeUserId = String(parsedUser?.id || parsedUser?.id || "").trim();
       }
     } catch (e) {}
     if (!activeUserId) {
@@ -247,7 +247,7 @@ const buildMatchmakingNotifications = (matches = [], currentUserId = "") => {
       // Safely extract Host ID
       const hostUserId = String(
         typeof match.hostUser === "object"
-          ? match.hostUser?._id || match.hostUser?.id
+          ? match.hostUser?.id || match.hostUser?.id
           : match.hostUser || ""
       ).trim();
 
@@ -263,10 +263,10 @@ const buildMatchmakingNotifications = (matches = [], currentUserId = "") => {
           match.joinedPlayers.forEach((jp) => {
             const playerObj = typeof jp.user === "object" ? jp.user : null;
             const playerName = playerObj?.name || "A player";
-            const jpUserId = String(playerObj?._id || playerObj?.id || jp.user || jp._id).trim();
+            const jpUserId = String(playerObj?.id || playerObj?.id || jp.user || jp.id).trim();
 
             items.push({
-              id: `match-joined-${match._id}-${jpUserId}`,
+              id: `match-joined-${match.id}-${jpUserId}`,
               title: "Teammate joined your match!",
               message: `${playerName} joined your team requirement for ${turfName} (${(
                 match.sport || "sport"
@@ -286,7 +286,7 @@ const buildMatchmakingNotifications = (matches = [], currentUserId = "") => {
       else {
         const isUserJoined = (match.joinedPlayers || []).some((jp) => {
           const jpId = String(
-            typeof jp.user === "object" ? jp.user?._id || jp.user?.id : jp.user || jp
+            typeof jp.user === "object" ? jp.user?.id || jp.user?.id : jp.user || jp
           ).trim();
           return jpId === activeUserId;
         });
@@ -298,7 +298,7 @@ const buildMatchmakingNotifications = (matches = [], currentUserId = "") => {
               : "Match Host";
 
           items.push({
-            id: `match-squad-${match._id}`,
+            id: `match-squad-${match.id}`,
             title: "You're in! Match squad update",
             message: `You joined ${hostName}'s match at ${turfName}. Check the team roster for player contacts.`,
             type: "account",

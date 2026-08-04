@@ -9,18 +9,18 @@ const TournamentRegistration = () => {
 
   const [loading, setLoading] = useState(false);
 
-  const [formData, setFormData] = useState({
-    teamName: "",
-    captainName: "",
-    captainPhone: "",
-    players: [
-      { name: "" },
-      { name: "" },
-      { name: "" },
-      { name: "" },
-      { name: "" },
-    ],
-  });
+ const [formData, setFormData] = useState({
+  teamName: "",
+  captainName: "",
+  contactNumber: "",
+  players: [
+    { name: "" },
+    { name: "" },
+    { name: "" },
+    { name: "" },
+    { name: "" },
+  ],
+});
 
   const handlePlayerChange = (index, value) => {
     const updatedPlayers = [...formData.players];
@@ -101,18 +101,18 @@ const TournamentRegistration = () => {
         />
 
         <input
-          type="tel"
-          placeholder="Captain Phone"
-          className="input input-bordered w-full"
-          value={formData.captainPhone}
-          onChange={(e) =>
-            setFormData({
-              ...formData,
-              captainPhone: e.target.value,
-            })
-          }
-          required
-        />
+  type="tel"
+  placeholder="Captain Phone"
+  className="input input-bordered w-full"
+  value={formData.contactNumber}
+  onChange={(e) =>
+    setFormData({
+      ...formData,
+      contactNumber: e.target.value,
+    })
+  }
+  required
+/>
 
         <div>
 

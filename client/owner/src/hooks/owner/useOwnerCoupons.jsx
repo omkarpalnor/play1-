@@ -70,7 +70,7 @@ const useOwnerCoupons = () => {
         isActive,
       });
       setCoupons((prev) =>
-        prev.map((c) => (c._id === couponId ? data.coupon : c))
+        prev.map((c) => (c.id === couponId ? data.coupon : c))
       );
     } catch (e) {
       toast.error(e?.response?.data?.message || "Failed to update coupon");
@@ -81,7 +81,7 @@ const useOwnerCoupons = () => {
     try {
       await axiosInstance.delete(`/api/owner/coupons/${couponId}`);
       toast.success("Coupon deleted");
-      setCoupons((prev) => prev.filter((c) => c._id !== couponId));
+      setCoupons((prev) => prev.filter((c) => c.id !== couponId));
     } catch (e) {
       toast.error(e?.response?.data?.message || "Failed to delete coupon");
     }

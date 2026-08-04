@@ -29,18 +29,22 @@ namespace PlayRizon.Api.Services
                 throw new Exception("Owner profile not found.");
             }
 
-            var turf = new Turf
-            {
-                Name = dto.Name,
-                Sport = dto.Sport,
-                Address = dto.Address,
-                PricePerHour = dto.PricePerHour,
-                ImageUrl = dto.ImageUrl,
-                Latitude = dto.Latitude,
-                Longitude = dto.Longitude,
-                CreatedAt = DateTime.UtcNow,
-                OwnerId = owner.Id
-            };
+           var turf = new Turf
+{
+    Name = dto.Name,
+    Sport = dto.Sport,
+    Address = dto.Address,
+    PricePerHour = dto.PricePerHour,
+
+    OpenTime = dto.OpenTime,
+    CloseTime = dto.CloseTime,
+
+    ImageUrl = dto.ImageUrl,
+    Latitude = dto.Latitude,
+    Longitude = dto.Longitude,
+    CreatedAt = DateTime.UtcNow,
+    OwnerId = owner.Id
+};
 
             await _turfRepository.AddAsync(turf);
 
@@ -121,23 +125,46 @@ namespace PlayRizon.Api.Services
             return true;
         }
 
-        private static TurfResponseDto Map(Turf turf)
+       private static TurfResponseDto Map(Turf turf)
+{
+    return new TurfResponseDto
+    {
+        Id = turf.Id,
+        Name = turf.Name,
+        Sport = turf.Sport,
+        Address = turf.Address,
+        PricePerHour = turf.PricePerHour,
+
+        OpenTime = turf.OpenTime,
+        CloseTime = turf.CloseTime,
+
+        ImageUrl = turf.ImageUrl,
+        Latitude = turf.Latitude,
+        Longitude = turf.Longitude,
+        IsAvailable = turf.IsAvailable,
+        OwnerId = turf.OwnerId,
+        CreatedAt = turf.CreatedAt
+    };
+}
+
+public async Task<TimeSlotResponseDto?> GetTimeSlotsAsync(Guid turfId, DateTime date)
+{
+    var turf = await _turfRepository.GetByIdAsync(turfId);
+
+    if (turf == null)
+        return null;
+
+    return new TimeSlotResponseDto
+    {
+        TimeSlots = new TimeSlotDto
         {
-            return new TurfResponseDto
-            {
-                Id = turf.Id,
-                Name = turf.Name,
-                Sport = turf.Sport,
-                Address = turf.Address,
-                PricePerHour = turf.PricePerHour,
-                ImageUrl = turf.ImageUrl,
-                Latitude = turf.Latitude,
-                Longitude = turf.Longitude,
-                IsAvailable = turf.IsAvailable,
-                OwnerId = turf.OwnerId,
-                CreatedAt = turf.CreatedAt
-            };
+            OpenTime = turf.OpenTime,
+            CloseTime = turf.CloseTime,
+            PricePerHour = turf.PricePerHour
+        },
+        BookedTime = new List<BookedTimeDto>()
+    };
+}
         }
 
     }
-}

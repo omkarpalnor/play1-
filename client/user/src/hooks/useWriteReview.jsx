@@ -10,8 +10,8 @@ const useWriteReview = ({ onReviewSubmitted } = {}) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const openReviewModal = (booking) => {
-    const turfId = booking?.turf?._id || booking?.turfId || null;
-    const bookingId = booking?._id || booking?.bookingId || null;
+    const turfId = booking?.turf?.id || booking?.turfId || null;
+    const bookingId = booking?.id || booking?.bookingId || null;
 
     if (!turfId || !bookingId) {
       toast.error("This booking is not eligible for review");

@@ -38,6 +38,14 @@ namespace PlayRizon.Api.Controllers
             return Ok(await _bookingService.GetMyBookingsAsync(userId));
         }
 
+        [HttpGet("admin/transactions")]
+[AllowAnonymous]
+public async Task<IActionResult> GetAllTransactions()
+{
+    var transactions = await _bookingService.GetAllTransactionsAsync();
+    return Ok(transactions);
+}
+
         [HttpGet("owner")]
         public async Task<IActionResult> OwnerBookings()
         {
@@ -62,5 +70,6 @@ public async Task<IActionResult> Cancel(Guid id)
         message = "Booking cancelled successfully."
     });
 }
+
     }
 }

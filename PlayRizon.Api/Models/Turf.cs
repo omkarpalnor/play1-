@@ -35,5 +35,8 @@ namespace PlayRizon.Api.Models
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public ICollection<Booking>? Bookings { get; set; }
+        public string OpenTime { get; set; } = "06:00 AM";
+
+public string CloseTime { get; set; } = "11:00 PM";
     }
 }

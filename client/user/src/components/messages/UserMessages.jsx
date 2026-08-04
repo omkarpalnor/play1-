@@ -208,17 +208,17 @@ const UserMessages = () => {
   const recipientType = watch("recipientType");
 
   const syncUpdatedMessage = useCallback((updatedMessage) => {
-    if (!updatedMessage?._id) {
+    if (!updatedMessage?.id) {
       return;
     }
 
     setMessages((prev) =>
       prev.map((message) =>
-        message._id === updatedMessage._id ? updatedMessage : message,
+        message.id === updatedMessage.id ? updatedMessage : message,
       ),
     );
     setSelectedConversation((prev) => {
-      if (!prev?.lastMessage?._id || prev.lastMessage._id !== updatedMessage._id) {
+      if (!prev?.lastMessage?.id || prev.lastMessage.id !== updatedMessage.id) {
         return prev;
       }
 
@@ -303,7 +303,7 @@ const UserMessages = () => {
         setShowNewConversation(false);
         setShowOwnerSearch(false);
         await fetchConversations(1, mailbox);
-        navigate(`/auth/messages/${response.data.conversation._id}`);
+        navigate(`/auth/messages/${response.data.conversation.id}`);
         toast.success(
           response.data.reused
             ? "Opened existing conversation"
@@ -319,16 +319,16 @@ const UserMessages = () => {
   };
 
   const sendReply = async (formData) => {
-    if (!selectedConversation?._id) {
+    if (!selectedConversation?.id) {
       return;
     }
 
     try {
       const response = await axiosInstance.post(
-        `/api/user/messages/${selectedConversation._id}/send`,
+        `/api/user/messages/${selectedConversation.id}/send`,
         {
           ...formData,
-          replyTo: replyTarget?._id || null,
+          replyTo: replyTarget?.id || null,
         },
       );
       if (response.data.success) {
@@ -370,14 +370,14 @@ const UserMessages = () => {
   };
 
   const handleTyping = useCallback(() => {
-    if (!socket.current?.connected || !selectedConversation?._id) return;
+    if (!socket.current?.connected || !selectedConversation?.id) return;
     socket.current.emit("typing_start", {
-      conversationId: selectedConversation._id,
+      conversationId: selectedConversation.id,
     });
     clearTimeout(typingTimeoutRef.current);
     typingTimeoutRef.current = setTimeout(() => {
       socket.current?.emit("typing_stop", {
-        conversationId: selectedConversation._id,
+        conversationId: selectedConversation.id,
       });
     }, 1500);
   }, [selectedConversation]);
@@ -389,9 +389,9 @@ const UserMessages = () => {
       );
       if (response.data.success) {
         setConversations((prev) =>
-          prev.filter((conversation) => conversation._id !== id),
+          prev.filter((conversation) => conversation.id !== id),
         );
-        if (selectedConversation?._id === id) {
+        if (selectedConversation?.id === id) {
           navigate("/auth/messages");
           setSelectedConversation(null);
           setMessages([]);
@@ -412,7 +412,7 @@ const UserMessages = () => {
       if (response.data.success) {
         if (mailbox === "archived") {
           setConversations((prev) =>
-            prev.filter((conversation) => conversation._id !== id),
+            prev.filter((conversation) => conversation.id !== id),
           );
           navigate("/auth/messages");
           setSelectedConversation(null);
@@ -464,7 +464,7 @@ const UserMessages = () => {
       });
       s.on("unread_update", ({ conversationId: cid, unreadCount }) => {
         setConversations((prev) =>
-          prev.map((c) => (c._id === cid ? { ...c, unreadCount } : c)),
+          prev.map((c) => (c.id === cid ? { ...c, unreadCount } : c)),
         );
       });
     }
@@ -490,12 +490,12 @@ const UserMessages = () => {
     onNewMessage: useCallback(
       (message) => {
         setMessages((prev) => {
-          if (prev.some((m) => m._id === message._id)) return prev;
+          if (prev.some((m) => m.id === message.id)) return prev;
           return [...prev, message];
         });
         setConversations((prev) =>
           prev.map((c) =>
-            c._id === conversationId
+            c.id === conversationId
               ? { ...c, lastMessageAt: message.createdAt, lastMessage: message }
               : c,
           ),
@@ -671,8 +671,8 @@ const UserMessages = () => {
                       className="btn btn-outline gap-2"
                       onClick={() =>
                         selectedConversation.isArchivedForCurrentUser
-                          ? unarchiveConversation(selectedConversation._id)
-                          : archiveConversation(selectedConversation._id)
+                          ? unarchiveConversation(selectedConversation.id)
+                          : archiveConversation(selectedConversation.id)
                       }
                     >
                       <Archive size={18} />
@@ -719,7 +719,7 @@ const UserMessages = () => {
                         const reactionGroups = getReactionGroups(message.reactions);
                         return (
                           <div
-                            key={message._id}
+                            key={message.id}
                             className={`flex ${isCurrentUser ? "justify-end" : "justify-start"}`}
                           >
                             <div
@@ -763,10 +763,10 @@ const UserMessages = () => {
                                 <div className="mt-3 flex flex-wrap gap-2">
                                   {reactionGroups.map((reactionGroup) => (
                                     <button
-                                      key={`${message._id}-${reactionGroup.emoji}`}
+                                      key={`${message.id}-${reactionGroup.emoji}`}
                                       type="button"
                                       onClick={() =>
-                                        toggleReaction(message._id, reactionGroup.emoji)
+                                        toggleReaction(message.id, reactionGroup.emoji)
                                       }
                                       className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs transition ${
                                         isCurrentUser
@@ -795,9 +795,9 @@ const UserMessages = () => {
                                 </button>
                                 {MESSAGE_REACTION_OPTIONS.map((emoji) => (
                                   <button
-                                    key={`${message._id}-${emoji}-picker`}
+                                    key={`${message.id}-${emoji}-picker`}
                                     type="button"
-                                    onClick={() => toggleReaction(message._id, emoji)}
+                                    onClick={() => toggleReaction(message.id, emoji)}
                                     className={`rounded-full border px-2 py-1 text-xs transition ${
                                       isCurrentUser
                                         ? "border-primary-content/20 bg-primary-content/10 text-primary-content hover:bg-primary-content/20"
@@ -962,8 +962,8 @@ const UserMessages = () => {
                     const previewText = getConversationPreview(conversation);
                     return (
                       <Link
-                        key={conversation._id}
-                        to={`/auth/messages/${conversation._id}`}
+                        key={conversation.id}
+                        to={`/auth/messages/${conversation.id}`}
                         className="card border border-base-300 bg-base-100 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
                       >
                         <div className="card-body">

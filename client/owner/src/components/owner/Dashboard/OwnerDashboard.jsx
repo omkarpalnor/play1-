@@ -37,7 +37,7 @@ const OwnerDashboard = () => {
 
   // Prepare data for Revenue Over Time chart
   const revenueChartData = revenueOverTime.map((item) => ({
-    date: new Date(item._id).toLocaleDateString(),
+    date: new Date(item.id).toLocaleDateString(),
     revenue: item.revenue,
   }));
 

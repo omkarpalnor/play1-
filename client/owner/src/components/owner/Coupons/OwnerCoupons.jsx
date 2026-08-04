@@ -81,7 +81,7 @@ const OwnerCoupons = () => {
               >
                 <option value="">All my turfs</option>
                 {turfOptions.map((t) => (
-                  <option key={t._id} value={t._id}>
+                  <option key={t.id} value={t.id}>
                     {t.name}
                   </option>
                 ))}
@@ -264,7 +264,7 @@ const OwnerCoupons = () => {
                 </thead>
                 <tbody>
                   {coupons.map((c) => (
-                    <tr key={c._id}>
+                    <tr key={c.id}>
                       <td className="font-semibold">{c.code}</td>
                       <td>{c.discountType}</td>
                       <td>
@@ -280,13 +280,13 @@ const OwnerCoupons = () => {
                           type="checkbox"
                           className="toggle toggle-success"
                           checked={!!c.isActive}
-                          onChange={(e) => toggleCoupon(c._id, e.target.checked)}
+                          onChange={(e) => toggleCoupon(c.id, e.target.checked)}
                         />
                       </td>
                       <td className="text-right">
                         <button
                           className="btn btn-ghost btn-sm text-error"
-                          onClick={() => deleteCoupon(c._id)}
+                          onClick={() => deleteCoupon(c.id)}
                         >
                           Delete
                         </button>

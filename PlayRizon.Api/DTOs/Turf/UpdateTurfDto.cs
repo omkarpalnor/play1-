@@ -15,6 +15,9 @@ namespace PlayRizon.Api.DTOs.Turf
 
         [Required]
         public decimal PricePerHour { get; set; }
+        public string OpenTime { get; set; } = "06:00 AM";
+
+public string CloseTime { get; set; } = "11:00 PM";
 
         public string? ImageUrl { get; set; }
 

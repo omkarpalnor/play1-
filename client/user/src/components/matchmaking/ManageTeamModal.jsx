@@ -11,7 +11,7 @@ const ManageTeamModal = ({ isOpen, onClose, post, onUpdated, token }) => {
 
     try {
       await axios.delete(
-        `http://localhost:5000/api/user/matchmaking/remove-player/${post._id}/${playerId}`,
+        `http://localhost:5000/api/user/matchmaking/remove-player/${post.id}/${playerId}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -32,7 +32,7 @@ const ManageTeamModal = ({ isOpen, onClose, post, onUpdated, token }) => {
 
     try {
       await axios.delete(
-        `http://localhost:5000/api/user/matchmaking/delete/${post._id}`,
+        `http://localhost:5000/api/user/matchmaking/delete/${post.id}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -66,7 +66,7 @@ const ManageTeamModal = ({ isOpen, onClose, post, onUpdated, token }) => {
           {post.joinedPlayers && post.joinedPlayers.length > 0 ? (
             post.joinedPlayers.map((p, index) => {
               const playerObj = typeof p.user === "object" ? p.user : null;
-              const playerId = playerObj?._id || p.user || p;
+              const playerId = playerObj?.id || p.user || p;
               const playerName = playerObj?.name || playerObj?.username || `Player ${index + 1}`;
 
               // Contact fallback chain

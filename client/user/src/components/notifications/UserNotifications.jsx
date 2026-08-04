@@ -75,8 +75,8 @@ const UserNotifications = () => {
   // Extract ID safely from Redux, Redux Persist (localStorage), or JWT token
   const getUserId = () => {
     // 1. Direct Redux
-    if (authState.user?._id || authState.user?.id) {
-      return authState.user?._id || authState.user?.id;
+    if (authState.user?.id || authState.user?.id) {
+      return authState.user?.id || authState.user?.id;
     }
 
     // 2. Redux Persist in localStorage (`persist:user`)
@@ -86,13 +86,13 @@ const UserNotifications = () => {
         const parsedPersist = JSON.parse(persistUser);
         if (parsedPersist.auth) {
           const parsedAuth = JSON.parse(parsedPersist.auth);
-          if (parsedAuth.user?._id || parsedAuth.user?.id) {
-            return parsedAuth.user._id || parsedAuth.user.id;
+          if (parsedAuth.user?.id || parsedAuth.user?.id) {
+            return parsedAuth.user.id || parsedAuth.user.id;
           }
           if (parsedAuth.token) {
             const decoded = parseJwt(parsedAuth.token);
-            if (decoded?.id || decoded?.user || decoded?._id) {
-              return decoded.id || decoded.user || decoded._id;
+            if (decoded?.id || decoded?.user || decoded?.id) {
+              return decoded.id || decoded.user || decoded.id;
             }
           }
         }
@@ -106,7 +106,7 @@ const UserNotifications = () => {
       const storedUser = localStorage.getItem("user");
       if (storedUser) {
         const parsed = JSON.parse(storedUser);
-        return parsed?._id || parsed?.id;
+        return parsed?.id || parsed?.id;
       }
     } catch (e) {}
 

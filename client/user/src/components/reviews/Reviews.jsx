@@ -25,7 +25,7 @@ const Reviews = ({ turfId }) => {
         <>
           <div className="space-y-4">
             {reviews.slice(0, displayCount).map((review) => (
-                <div key={review._id} className="card bg-base-100 shadow-xl">
+                <div key={review.id} className="card bg-base-100 shadow-xl">
                   <div className="card-body">
                     <div className="flex items-center justify-between">
                       <div>
@@ -47,7 +47,7 @@ const Reviews = ({ turfId }) => {
                       <input
                         key={i}
                         type="radio"
-                        name={`rating-${review._id}`}
+                        name={`rating-${review.id}`}
                         className="mask mask-star-2 bg-orange-400 cursor-auto"
                         readOnly
                         disabled

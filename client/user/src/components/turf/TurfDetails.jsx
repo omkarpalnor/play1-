@@ -18,7 +18,7 @@ const TurfDetails = () => {
     return <TurfDetailsSkeleton />;
   }
 
-  const turf = turfs.find((t) => t._id === id);
+  const turf = turfs.find((t) => t.id === id);
 
   if (!turf) {
     return (

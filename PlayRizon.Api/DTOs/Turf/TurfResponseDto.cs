@@ -23,5 +23,8 @@
         public Guid OwnerId { get; set; }
 
         public DateTime CreatedAt { get; set; }
+        public string OpenTime { get; set; } = "";
+
+public string CloseTime { get; set; } = "";
     }
 }

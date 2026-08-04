@@ -8,6 +8,7 @@ using PlayRizon.Api.Interfaces;
 using PlayRizon.Api.Repositories;
 using PlayRizon.Api.Services;
 using System.Text;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -69,9 +70,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         ValidAudience = builder.Configuration["Jwt:Audience"],
 
         IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
+            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)),
+
+        NameClaimType = ClaimTypes.NameIdentifier,
+        RoleClaimType = ClaimTypes.Role
     };
-});
+});   
 
 builder.Services.AddAuthorization();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -89,6 +93,21 @@ builder.Services.AddScoped<ITurfService, TurfService>();
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+builder.Services.AddScoped<ITournamentRepository, TournamentRepository>();
+builder.Services.AddScoped<ITournamentService, TournamentService>();
+builder.Services.AddScoped<
+    ITournamentRegistrationRepository,
+    TournamentRegistrationRepository>();
+
+builder.Services.AddScoped<
+    ITournamentRegistrationService,
+    TournamentRegistrationService>();
+
+    builder.Services.AddScoped<ITournamentRepository, TournamentRepository>();
+builder.Services.AddScoped<ITournamentService, TournamentService>();
+
+builder.Services.AddScoped<ITournamentRegistrationRepository, TournamentRegistrationRepository>();
+builder.Services.AddScoped<ITournamentRegistrationService, TournamentRegistrationService>();
 
 builder.Services.AddCors(options =>
 {
@@ -116,7 +135,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseCors("ReactPolicy");
 app.UseAuthentication();
-
+app.UseStaticFiles();
 app.UseAuthorization();
 
 app.MapControllers();

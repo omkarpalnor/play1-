@@ -118,7 +118,7 @@ const TurfBookingHistory = () => {
   };
 
   const openCancelModal = async (booking) => {
-    const preview = await loadCancellationPreview(booking._id);
+    const preview = await loadCancellationPreview(booking.id);
     if (!preview) return;
     setSelectedBooking(booking);
     setCancellationReason("");
@@ -132,7 +132,7 @@ const TurfBookingHistory = () => {
 
   const handleConfirmCancellation = async () => {
     if (!selectedBooking) return;
-    await cancelBookingWithReason(selectedBooking._id, cancellationReason);
+    await cancelBookingWithReason(selectedBooking.id, cancellationReason);
     closeCancelModal();
   };
 
@@ -160,7 +160,7 @@ const TurfBookingHistory = () => {
     const end = new Date(start.getTime() + durationMs);
 
     await requestReschedule(
-      selectedRescheduleBooking._id,
+      selectedRescheduleBooking.id,
       start.toISOString(),
       end.toISOString(),
       rescheduleReason
@@ -196,7 +196,7 @@ const TurfBookingHistory = () => {
       <div className="space-y-6 mx-auto lg:w-1/2">
         {bookings.map((booking) => (
           <div
-            key={booking._id}
+            key={booking.id}
             className="card bg-base-100 shadow-xl animate-bounce-fade-in"
           >
             <div className="card-body ">
@@ -305,7 +305,7 @@ const TurfBookingHistory = () => {
                   <button
                     className="btn btn-outline btn-error"
                     onClick={() => openCancelModal(booking)}
-                    disabled={cancellingBookingId === booking._id}
+                    disabled={cancellingBookingId === booking.id}
                   >
                     Cancel Booking
                   </button>
@@ -316,7 +316,7 @@ const TurfBookingHistory = () => {
                   <button
                     className="btn btn-outline"
                     onClick={() => openRescheduleModal(booking)}
-                    disabled={reschedulingBookingId === booking._id}
+                    disabled={reschedulingBookingId === booking.id}
                   >
                     Request Reschedule
                   </button>
@@ -326,10 +326,10 @@ const TurfBookingHistory = () => {
                 booking.reschedule?.settlement?.status === "awaiting_payment" ? (
                   <button
                     className="btn btn-secondary"
-                    onClick={() => payRescheduleDifference(booking._id)}
-                    disabled={payingRescheduleBookingId === booking._id}
+                    onClick={() => payRescheduleDifference(booking.id)}
+                    disabled={payingRescheduleBookingId === booking.id}
                   >
-                    {payingRescheduleBookingId === booking._id
+                    {payingRescheduleBookingId === booking.id
                       ? "Opening Payment..."
                       : `Pay Rs ${Number(
                           booking.reschedule?.settlement?.amount || 0
@@ -409,9 +409,9 @@ const TurfBookingHistory = () => {
               <button
                 className="btn btn-error"
                 onClick={handleConfirmCancellation}
-                disabled={cancellingBookingId === selectedBooking._id}
+                disabled={cancellingBookingId === selectedBooking.id}
               >
-                {cancellingBookingId === selectedBooking._id
+                {cancellingBookingId === selectedBooking.id
                   ? "Cancelling..."
                   : "Confirm Cancellation"}
               </button>
@@ -471,9 +471,9 @@ const TurfBookingHistory = () => {
               <button
                 className="btn btn-primary"
                 onClick={handleSubmitReschedule}
-                disabled={reschedulingBookingId === selectedRescheduleBooking._id}
+                disabled={reschedulingBookingId === selectedRescheduleBooking.id}
               >
-                {reschedulingBookingId === selectedRescheduleBooking._id
+                {reschedulingBookingId === selectedRescheduleBooking.id
                   ? "Submitting..."
                   : "Send Request"}
               </button>

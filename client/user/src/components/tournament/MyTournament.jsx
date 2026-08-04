@@ -52,7 +52,7 @@ const MyTournament = () => {
           {registrations.map((registration) => (
 
             <div
-              key={registration._id}
+              key={registration.id}
               className="bg-base-100 rounded-xl shadow p-6"
             >
 
@@ -82,7 +82,7 @@ const MyTournament = () => {
 
               <p className="mt-3">
                 <span className="badge badge-warning">
-                  {registration.registrationStatus}
+                  {registration.status}
                 </span>
               </p>
 

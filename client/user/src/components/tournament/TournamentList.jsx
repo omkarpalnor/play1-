@@ -14,22 +14,20 @@ const TournamentList = () => {
     fetchTournaments();
   }, []);
 
-  const fetchTournaments = async () => {
-    try {
-      const { data } = await axiosInstance.get(
-        "/api/user/tournaments"
-      );
+ const fetchTournaments = async () => {
+  try {
+    const { data } = await axiosInstance.get("/api/user/tournaments");
 
-      if (data.success) {
-        setTournaments(data.tournaments);
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error("Unable to fetch tournaments");
-    } finally {
-      setLoading(false);
+    if (data.success) {
+      setTournaments(data.data);
     }
-  };
+  } catch (error) {
+    console.error(error);
+    toast.error("Unable to fetch tournaments");
+  } finally {
+    setLoading(false);
+  }
+};
 
   const filteredTournaments = useMemo(() => {
     return tournaments.filter((item) => {
@@ -121,7 +119,7 @@ const TournamentList = () => {
           {filteredTournaments.map((tournament) => (
 
             <TournamentCard
-              key={tournament._id}
+             key={tournament.id}
               tournament={tournament}
             />
 

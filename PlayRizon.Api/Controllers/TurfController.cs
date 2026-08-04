@@ -90,6 +90,20 @@ public async Task<IActionResult> GetAll()
             });
         }
 
+        [HttpGet("timeslot")]
+[AllowAnonymous]
+public async Task<IActionResult> GetTimeSlots(
+    [FromQuery] Guid turfId,
+    [FromQuery] DateTime date)
+{
+    var result = await _turfService.GetTimeSlotsAsync(turfId, date);
+
+    if (result == null)
+        return NotFound();
+
+    return Ok(result);
+}
+
         [HttpGet("nearby")]
         [AllowAnonymous]
         public async Task<IActionResult> GetNearbyTurfs(

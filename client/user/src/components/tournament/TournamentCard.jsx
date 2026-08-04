@@ -72,7 +72,7 @@ const TournamentCard = ({ tournament }) => {
 
         <button
           onClick={() =>
-         navigate(`/tournaments/${tournament._id}`)
+         navigate(`/tournaments/${tournament.id}`)
           }
           className="mt-6 w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg py-3"
         >

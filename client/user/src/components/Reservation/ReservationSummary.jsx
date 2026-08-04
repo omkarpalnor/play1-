@@ -62,7 +62,7 @@ const ReservationSummary = ({
 
               return (
                 <div
-                  key={coupon._id}
+                  key={coupon.id}
                   className="rounded-lg border border-base-300 bg-base-100 p-3"
                 >
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">

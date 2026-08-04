@@ -33,7 +33,7 @@ export const syncUserNotifications = async (currentUserId = "") => {
       const storedUser = window.localStorage.getItem("user");
       if (storedUser) {
         const parsed = JSON.parse(storedUser);
-        activeId = String(parsed?._id || parsed?.id || "").trim();
+        activeId = String(parsed?.id || parsed?.id || "").trim();
       }
     } catch (e) {}
     if (!activeId) {

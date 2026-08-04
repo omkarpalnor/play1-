@@ -46,7 +46,7 @@ const MatchmakingFeed = () => {
       if (!payloadBase64) return "";
       const decodedPayload = JSON.parse(atob(payloadBase64));
       return (
-        decodedPayload?.user?._id ||
+        decodedPayload?.user?.id ||
         decodedPayload?.user?.id ||
         decodedPayload?.user ||
         decodedPayload?.id ||
@@ -61,7 +61,7 @@ const MatchmakingFeed = () => {
   // Fallback chain: JWT token payload -> Redux state user object -> localStorage
   const currentUserId =
     getUserIdFromToken(token) ||
-    authState.user?._id ||
+    authState.user?.id ||
     authState.user?.id ||
     localStorage.getItem("userId") ||
     "";
@@ -145,7 +145,7 @@ const MatchmakingFeed = () => {
             const spotsRemaining = (post.playersNeeded || 0) - (post.joinedPlayers?.length || 0);
 
             // 1. Safely extract Host ID and Host Name
-            const hostId = typeof post.hostUser === "object" ? post.hostUser?._id : post.hostUser;
+            const hostId = typeof post.hostUser === "object" ? post.hostUser?.id : post.hostUser;
             const hostName = typeof post.hostUser === "object" ? post.hostUser?.name : "";
 
             // 2. Extract logged-in user details
@@ -164,14 +164,14 @@ const MatchmakingFeed = () => {
               !isHost &&
               loggedInId &&
               post.joinedPlayers?.some((p) => {
-                const playerUserId = typeof p.user === "object" ? p.user?._id : (p.user || p);
+                const playerUserId = typeof p.user === "object" ? p.user?.id : (p.user || p);
                 return String(playerUserId).trim() === loggedInId;
               })
             );
 
             return (
               <div
-                key={post._id}
+                key={post.id}
                 className="card bg-base-100 border border-base-300 shadow-sm hover:shadow-md transition p-5"
               >
                 <div className="flex justify-between items-start mb-3">
@@ -226,7 +226,7 @@ const MatchmakingFeed = () => {
                     </div>
                   ) : (
                     <button
-                      onClick={() => handleJoin(post._id)}
+                      onClick={() => handleJoin(post.id)}
                       disabled={spotsRemaining <= 0}
                       className="btn btn-primary btn-sm"
                     >

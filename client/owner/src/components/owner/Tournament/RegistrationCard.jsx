@@ -21,21 +21,21 @@ const RegistrationCard = ({
 
           <p className="flex items-center gap-2 mt-2">
             <Phone size={16} />
-            {registration.captainPhone}
+            {registration.contactNumber}
           </p>
         </div>
 
         <span
           className={`badge
             ${
-              registration.registrationStatus === "Approved"
+              registration.status === "Approved"
                 ? "badge-success"
-                : registration.registrationStatus === "Rejected"
+                : registration.status === "Rejected"
                 ? "badge-error"
                 : "badge-warning"
             }`}
         >
-          {registration.registrationStatus}
+          {registration.status}
         </span>
 
       </div>
@@ -47,20 +47,18 @@ const RegistrationCard = ({
         </h3>
 
         <ul className="list-disc ml-5">
-
-          {registration.players.map((player, index) => (
-            <li key={index}>{player.name}</li>
-          ))}
-
-        </ul>
+  {(registration.players || []).map((player, index) => (
+    <li key={index}>{player.name}</li>
+  ))}
+</ul>
 
       </div>
 
-      {registration.registrationStatus === "Pending" && (
+      {registration.status === "Pending" && (
         <div className="flex gap-3 mt-6">
 
           <button
-            onClick={() => onApprove(registration._id)}
+            onClick={() => onApprove(registration.id)}
             className="btn btn-success flex-1"
           >
             <CheckCircle size={18} />
@@ -68,7 +66,7 @@ const RegistrationCard = ({
           </button>
 
           <button
-            onClick={() => onReject(registration._id)}
+            onClick={() => onReject(registration.id)}
             className="btn btn-error flex-1"
           >
             <XCircle size={18} />

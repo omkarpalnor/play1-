@@ -192,17 +192,17 @@ const AdminMessages = () => {
   const autoReplyEnabled = watchAutoReply("enabled");
 
   const syncUpdatedMessage = useCallback((updatedMessage) => {
-    if (!updatedMessage?._id) {
+    if (!updatedMessage?.id) {
       return;
     }
 
     setMessages((prev) =>
       prev.map((message) =>
-        message._id === updatedMessage._id ? updatedMessage : message,
+        message.id === updatedMessage.id ? updatedMessage : message,
       ),
     );
     setSelectedConversation((prev) => {
-      if (!prev?.lastMessage?._id || prev.lastMessage._id !== updatedMessage._id) {
+      if (!prev?.lastMessage?.id || prev.lastMessage.id !== updatedMessage.id) {
         return prev;
       }
 
@@ -213,7 +213,7 @@ const AdminMessages = () => {
     });
     setConversations((prev) =>
       prev.map((conversation) =>
-        conversation.lastMessage?._id === updatedMessage._id
+        conversation.lastMessage?.id === updatedMessage.id
           ? {
               ...conversation,
               lastMessage: updatedMessage,
@@ -319,7 +319,7 @@ const AdminMessages = () => {
         }
         await fetchConversations(mailbox);
         await fetchStats();
-        navigate(`/admin/messages/${response.data.conversation._id}`);
+        navigate(`/admin/messages/${response.data.conversation.id}`);
         toast.success(response.data.reused ? "Opened existing conversation" : "Conversation started successfully");
       }
     } catch (error) {
@@ -329,7 +329,7 @@ const AdminMessages = () => {
   };
 
   const sendReply = async (formData) => {
-    if (!selectedConversation?._id) {
+    if (!selectedConversation?.id) {
       return;
     }
 
@@ -342,13 +342,13 @@ const AdminMessages = () => {
 
       const payload = new FormData();
       payload.append("content", normalizedContent);
-      payload.append("replyTo", replyTarget?._id || "");
+      payload.append("replyTo", replyTarget?.id || "");
       composerAttachments.forEach((file) => {
         payload.append("attachments", file);
       });
 
       const response = await axiosInstance.post(
-        `/api/admin/messages/${selectedConversation._id}/send`,
+        `/api/admin/messages/${selectedConversation.id}/send`,
         payload,
       );
       if (response.data.success) {
@@ -395,12 +395,12 @@ const AdminMessages = () => {
   };
 
   const updateStatus = async (status) => {
-    if (!selectedConversation?._id) {
+    if (!selectedConversation?.id) {
       return;
     }
 
     try {
-      const response = await axiosInstance.patch(`/api/admin/messages/${selectedConversation._id}/status`, { status });
+      const response = await axiosInstance.patch(`/api/admin/messages/${selectedConversation.id}/status`, { status });
       if (response.data.success) {
         setSelectedConversation((prev) =>
           prev
@@ -422,7 +422,7 @@ const AdminMessages = () => {
   };
 
   const saveAutoReplySettings = async (formData) => {
-    if (!selectedConversation?._id) {
+    if (!selectedConversation?.id) {
       return;
     }
 
@@ -434,7 +434,7 @@ const AdminMessages = () => {
         autoReplyDelay: Number(formData.delay),
       };
       const response = await axiosInstance.patch(
-        `/api/admin/messages/${selectedConversation._id}/auto-reply`,
+        `/api/admin/messages/${selectedConversation.id}/auto-reply`,
         payload
       );
 
@@ -474,8 +474,8 @@ const AdminMessages = () => {
       if (response.data.success) {
         await fetchConversations(mailbox);
         await fetchStats();
-        if (selectedConversation?._id) {
-          await fetchMessages(selectedConversation._id);
+        if (selectedConversation?.id) {
+          await fetchMessages(selectedConversation.id);
         }
 
         const processedCount = response.data.processedReplies?.length || 0;
@@ -532,7 +532,7 @@ const AdminMessages = () => {
     const handleUnreadUpdate = ({ conversationId: updatedConversationId, unreadCount }) => {
       setConversations((prev) =>
         prev.map((conversation) =>
-          conversation._id === updatedConversationId
+          conversation.id === updatedConversationId
             ? { ...conversation, unreadCount }
             : conversation,
         ),
@@ -560,7 +560,7 @@ const AdminMessages = () => {
     onNewMessage: useCallback(
       (message) => {
         setMessages((prev) => {
-          if (prev.some((existingMessage) => existingMessage._id === message._id)) {
+          if (prev.some((existingMessage) => existingMessage.id === message.id)) {
             return prev;
           }
 
@@ -577,7 +577,7 @@ const AdminMessages = () => {
         );
         setConversations((prev) =>
           prev.map((conversation) =>
-            conversation._id === conversationId
+            conversation.id === conversationId
               ? {
                   ...conversation,
                   lastMessage: message,
@@ -606,7 +606,7 @@ const AdminMessages = () => {
       const response = await axiosInstance.patch(`/api/admin/messages/${id}/archive`);
       if (response.data.success) {
         if (mailbox === "inbox") {
-          setConversations((prev) => prev.filter((conversation) => conversation._id !== id));
+          setConversations((prev) => prev.filter((conversation) => conversation.id !== id));
           navigate("/admin/messages");
           setSelectedConversation(null);
           setMessages([]);
@@ -626,7 +626,7 @@ const AdminMessages = () => {
       const response = await axiosInstance.patch(`/api/admin/messages/${id}/unarchive`);
       if (response.data.success) {
         if (mailbox === "archived") {
-          setConversations((prev) => prev.filter((conversation) => conversation._id !== id));
+          setConversations((prev) => prev.filter((conversation) => conversation.id !== id));
           navigate("/admin/messages");
           setSelectedConversation(null);
           setMessages([]);
@@ -943,8 +943,8 @@ const AdminMessages = () => {
                         className="btn btn-outline mt-1 gap-2"
                         onClick={() =>
                           selectedConversation.isArchivedForCurrentUser
-                            ? unarchiveConversation(selectedConversation._id)
-                            : archiveConversation(selectedConversation._id)
+                            ? unarchiveConversation(selectedConversation.id)
+                            : archiveConversation(selectedConversation.id)
                         }
                       >
                         <Shield size={16} />
@@ -990,7 +990,7 @@ const AdminMessages = () => {
                           : null;
                         const reactionGroups = getReactionGroups(message.reactions);
                         return (
-                          <div key={message._id} className={`flex ${isAdmin ? "justify-end" : "justify-start"}`}>
+                          <div key={message.id} className={`flex ${isAdmin ? "justify-end" : "justify-start"}`}>
                             <div
                               className={`max-w-[min(100%,48rem)] rounded-[24px] px-4 py-3 shadow-sm lg:max-w-[min(100%,56rem)] ${
                                 isAdmin
@@ -1047,9 +1047,9 @@ const AdminMessages = () => {
                                 <div className="mt-3 flex flex-wrap gap-2">
                                   {reactionGroups.map((reactionGroup) => (
                                     <button
-                                      key={`${message._id}-${reactionGroup.emoji}`}
+                                      key={`${message.id}-${reactionGroup.emoji}`}
                                       type="button"
-                                      onClick={() => toggleReaction(message._id, reactionGroup.emoji)}
+                                      onClick={() => toggleReaction(message.id, reactionGroup.emoji)}
                                       className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs font-medium transition ${
                                         isAdmin
                                           ? "border-primary-content/20 bg-primary-content/10 text-primary-content hover:bg-primary-content/20"
@@ -1077,9 +1077,9 @@ const AdminMessages = () => {
                                 </button>
                                 {MESSAGE_REACTION_OPTIONS.map((emoji) => (
                                   <button
-                                    key={`${message._id}-${emoji}-picker`}
+                                    key={`${message.id}-${emoji}-picker`}
                                     type="button"
-                                    onClick={() => toggleReaction(message._id, emoji)}
+                                    onClick={() => toggleReaction(message.id, emoji)}
                                     className={`rounded-full border px-2 py-1 text-xs transition ${
                                       isAdmin
                                         ? "border-primary-content/20 bg-primary-content/10 text-primary-content hover:bg-primary-content/20"
@@ -1240,8 +1240,8 @@ const AdminMessages = () => {
                     const previewText = getConversationPreview(conversation);
                     return (
                       <Link
-                        key={conversation._id}
-                        to={`/admin/messages/${conversation._id}`}
+                        key={conversation.id}
+                        to={`/admin/messages/${conversation.id}`}
                         className="card border border-base-300 bg-base-100 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
                       >
                         <div className="card-body">
@@ -1331,7 +1331,7 @@ const AdminMessages = () => {
                     <select {...registerConversation("recipientEmail")} className="modern-select w-full">
                       <option value="">Select recipient</option>
                       {recipientOptions.map((recipient) => (
-                        <option key={recipient._id} value={recipient.email}>
+                        <option key={recipient.id} value={recipient.email}>
                           {recipient.name} - {formatRoleLabel(recipientType)} - {recipient.email}
                         </option>
                       ))}

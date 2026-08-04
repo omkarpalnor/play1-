@@ -1,6 +1,7 @@
 ﻿using PlayRizon.Api.DTOs.Booking;
 using PlayRizon.Api.Interfaces;
 using PlayRizon.Api.Models;
+using PlayRizon.Api.DTOs.Admin;
 
 namespace PlayRizon.Api.Services
 {
@@ -111,5 +112,23 @@ namespace PlayRizon.Api.Services
 
             return true;
         }
+        public async Task<List<TransactionResponseDto>> GetAllTransactionsAsync()
+{
+    var bookings = await _bookingRepository.GetAllAsync();
+
+    return bookings
+        .OrderByDescending(b => b.CreatedAt)
+        .Select(b => new TransactionResponseDto
+        {
+            Id = b.Id,
+        UserName = b.User?.Name ?? "",
+            TurfName = b.Turf?.Name ?? "",
+            Amount = b.Amount,
+            Status = b.Status,
+            BookingDate = b.BookingDate,
+            CreatedAt = b.CreatedAt
+        })
+        .ToList();
+}
     }
 }

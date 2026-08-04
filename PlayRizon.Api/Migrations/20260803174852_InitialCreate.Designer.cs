@@ -12,8 +12,8 @@ using PlayRizon.Api.Data;
 namespace PlayRizon.Api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260801142043_UpdateBooking")]
-    partial class UpdateBooking
+    [Migration("20260803174852_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -174,6 +174,22 @@ namespace PlayRizon.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Banner")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<decimal>("EntryFee")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
@@ -191,12 +207,23 @@ namespace PlayRizon.Api.Migrations
                     b.Property<int>("RegisteredTeams")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("RegistrationDeadline")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Sport")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("UserId")
                         .HasColumnType("uniqueidentifier");
@@ -214,6 +241,34 @@ namespace PlayRizon.Api.Migrations
                     b.ToTable("Tournaments");
                 });
 
+            modelBuilder.Entity("PlayRizon.Api.Models.TournamentRegistration", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("RegisteredAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("TournamentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TournamentId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("TournamentRegistrations");
+                });
+
             modelBuilder.Entity("PlayRizon.Api.Models.Turf", b =>
                 {
                     b.Property<Guid>("Id")
@@ -224,6 +279,10 @@ namespace PlayRizon.Api.Migrations
                         .IsRequired()
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
+
+                    b.Property<string>("CloseTime")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -244,6 +303,10 @@ namespace PlayRizon.Api.Migrations
                         .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("OpenTime")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("OwnerId")
                         .HasColumnType("uniqueidentifier");
@@ -280,6 +343,9 @@ namespace PlayRizon.Api.Migrations
                     b.Property<bool>("EmailVerified")
                         .HasColumnType("bit");
 
+                    b.Property<string>("GoogleId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -290,6 +356,9 @@ namespace PlayRizon.Api.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Phone")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProfilePicture")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Role")
@@ -357,6 +426,25 @@ namespace PlayRizon.Api.Migrations
                     b.Navigation("Owner");
                 });
 
+            modelBuilder.Entity("PlayRizon.Api.Models.TournamentRegistration", b =>
+                {
+                    b.HasOne("PlayRizon.Api.Models.Tournament", "Tournament")
+                        .WithMany("Registrations")
+                        .HasForeignKey("TournamentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PlayRizon.Api.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Tournament");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("PlayRizon.Api.Models.Turf", b =>
                 {
                     b.HasOne("PlayRizon.Api.Models.Owner", "Owner")
@@ -373,6 +461,11 @@ namespace PlayRizon.Api.Migrations
                     b.Navigation("Tournaments");
 
                     b.Navigation("Turfs");
+                });
+
+            modelBuilder.Entity("PlayRizon.Api.Models.Tournament", b =>
+                {
+                    b.Navigation("Registrations");
                 });
 
             modelBuilder.Entity("PlayRizon.Api.Models.Turf", b =>

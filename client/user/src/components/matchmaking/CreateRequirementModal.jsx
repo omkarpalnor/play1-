@@ -177,7 +177,7 @@ export default function CreateRequirementModal({ isOpen, onClose, onPostCreated 
               >
                 <option value="">-- Choose a Turf --</option>
                 {turfs.map((t) => (
-                  <option key={t._id} value={t._id}>
+                  <option key={t.id} value={t.id}>
                     {t.name}
                   </option>
                 ))}
