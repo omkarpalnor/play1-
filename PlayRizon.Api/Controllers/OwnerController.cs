@@ -20,15 +20,23 @@ namespace PlayRizon.Api.Controllers
 
         // 
         
-        [Authorize]
+      [Authorize]
 [HttpPost("apply")]
-public IActionResult Apply()
+public async Task<IActionResult> Apply([FromBody] CreateOwnerDto dto)
 {
-    return Ok(User.Claims.Select(c => new
+    var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+
+    if (userIdClaim == null)
+        return Unauthorized();
+
+    var userId = Guid.Parse(userIdClaim.Value);
+
+    var message = await _ownerService.ApplyAsync(userId, dto);
+
+    return Ok(new
     {
-        c.Type,
-        c.Value
-    }));
+        message
+    });
 }
         //[HttpGet("dashboard")]
         //public async Task<IActionResult> GetDashboard()
@@ -59,5 +67,7 @@ public IActionResult Apply()
 
             return Ok(result);
         }
+       
+
     }
 }
