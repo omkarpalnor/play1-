@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PlayRizon.Api.Models;
 
+
+
 namespace PlayRizon.Api.Data
 {
     public class ApplicationDbContext : DbContext
@@ -15,9 +17,12 @@ namespace PlayRizon.Api.Data
         public DbSet<Turf> Turfs { get; set; }
         public DbSet<Booking> Bookings { get; set; }
         public DbSet<Tournament> Tournaments { get; set; }
+       public DbSet<PlayerRequirement> PlayerRequirements { get; set; }
         public DbSet<Matchmaking> Matchmakings { get; set; }
         public DbSet<Owner> Owners { get; set; }
         public DbSet<TournamentRegistration> TournamentRegistrations { get; set; }
+
+        
         
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

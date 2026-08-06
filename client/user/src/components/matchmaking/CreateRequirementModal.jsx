@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axiosInstance from "../../hooks/useAxiosInstance";
 import { X, Calendar, Clock, MapPin, Users, Award, FileText } from "lucide-react";
 
 const generateSlots = (openTime, closeTime) => {
@@ -30,32 +30,32 @@ export default function CreateRequirementModal({ isOpen, onClose, onPostCreated 
   const [availableSlots, setAvailableSlots] = useState([]);
   const [loadingSlots, setLoadingSlots] = useState(false);
 
-  const [formData, setFormData] = useState({
-    turf: "",
-    sport: "Football",
-    matchDate: "",
-    timeSlot: "",
-    currentMembersCount: 1,
-    playersNeeded: 1,
-    description: "",
-  });
+ const [formData, setFormData] = useState({
+  teamName: "",
+
+  turf: "",
+  sport: "Football",
+
+  matchDate: "",
+  timeSlot: "",
+
+  currentMembersCount: 1,
+  playersNeeded: 1,
+
+  description: "",
+});
 
   // Fetch Turfs on Modal Open
   useEffect(() => {
     if (isOpen) {
       const fetchTurfs = async () => {
-        try {
-          const token = localStorage.getItem("token");
-          const res = await axios.get("/api/user/turf/all", {
-            headers: token ? { Authorization: `Bearer ${token}` } : {},
-          });
-          const data = res.data;
-          const list = Array.isArray(data) ? data : data?.turfs || data?.data || [];
-          setTurfs(list);
-        } catch (err) {
-          console.error("Error fetching turfs:", err);
-        }
-      };
+  try {
+    const res = await axiosInstance.get("/api/Turf");
+    setTurfs(res.data);
+  } catch (err) {
+    console.error("Error fetching turfs:", err);
+  }
+};
       fetchTurfs();
     }
   }, [isOpen]);
@@ -67,12 +67,9 @@ export default function CreateRequirementModal({ isOpen, onClose, onPostCreated 
         setLoadingSlots(true);
         try {
           const token = localStorage.getItem("token");
-          const res = await axios.get(
-            `/api/user/turf/timeSlot?turfId=${formData.turf}&date=${formData.matchDate}`,
-            {
-              headers: token ? { Authorization: `Bearer ${token}` } : {},
-            }
-          );
+         const res = await axiosInstance.get(
+  `/api/Booking/available-slots?turfId=${formData.turf}&date=${formData.matchDate}`
+);
 
           if (res.data?.timeSlots) {
             const { openTime, closeTime } = res.data.timeSlots;
@@ -98,50 +95,58 @@ export default function CreateRequirementModal({ isOpen, onClose, onPostCreated 
   if (!isOpen) return null;
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  setFormData({
+    ...formData,
+    [e.target.name]: e.target.value,
+  });
+};
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    // 1. Try fetching token directly or parse from redux persist:user
-    let token = localStorage.getItem("token");
+  try {
+    const payload = {
+      captainId: 1,
+      turfId: Number(formData.turf),
+      teamName: formData.teamName,
+      sport: formData.sport,
+      currentMembersCount: Number(formData.currentMembersCount),
+      playersNeeded: Number(formData.playersNeeded),
+      matchDate: formData.matchDate,
+      timeSlot: formData.timeSlot,
+      description: formData.description,
+    };
 
-    if (!token) {
-      const persistedUser = localStorage.getItem("persist:user");
-      if (persistedUser) {
-        try {
-          const parsedPersist = JSON.parse(persistedUser);
-          // If user object is double-stringified by Redux Persist
-          const userState = JSON.parse(parsedPersist.user || parsedPersist.auth || "{}");
-          token = userState.token || parsedPersist.token;
-        } catch (err) {
-          console.error("Error parsing persist:user", err);
-        }
-      }
-    }
+    console.log("Sending Payload:", payload);
 
-    if (!token) {
-      alert("Session expired or token missing. Please log in again.");
-      return;
-    }
+    await axiosInstance.post("/api/PlayerRequirement", payload);
 
-    try {
-      await axios.post("/api/user/matchmaking/create", formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+    alert("Requirement Posted Successfully!");
 
-      alert("Requirement posted successfully!");
-      onPostCreated();
-      onClose();
-    } catch (err) {
-      console.error("Error creating post:", err);
-      alert(err.response?.data?.message || "Failed to create post.");
-    }
-  };
+    setFormData({
+      teamName: "",
+      turf: "",
+      sport: "Football",
+      matchDate: "",
+      timeSlot: "",
+      currentMembersCount: 1,
+      playersNeeded: 1,
+      description: "",
+    });
 
+    onPostCreated();
+    onClose();
+
+  } catch (err) {
+    console.error(err);
+
+    alert(
+      err.response?.data?.title ||
+      err.response?.data?.message ||
+      "Failed to create requirement."
+    );
+  }
+};
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
       <div className="bg-slate-900 border border-slate-800 text-white rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200">
@@ -149,7 +154,7 @@ export default function CreateRequirementModal({ isOpen, onClose, onPostCreated 
         <div className="flex items-center justify-between p-6 border-b border-slate-800">
           <h2 className="text-xl font-bold text-white flex items-center gap-2">
             <Users className="w-5 h-5 text-emerald-400" />
-            Need Players for Your Team
+            Create Player Requirement
           </h2>
           <button
             onClick={onClose}
@@ -161,7 +166,23 @@ export default function CreateRequirementModal({ isOpen, onClose, onPostCreated 
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          {/* Turf Selection */}
+          {/* Team Name */}
+<div>
+  <label className="block text-xs font-semibold uppercase text-slate-400 mb-1">
+    Team Name
+  </label>
+
+  <input
+    type="text"
+    name="teamName"
+    value={formData.teamName}
+    onChange={handleChange}
+    placeholder="e.g. FC Warriors"
+    required
+    className="w-full bg-slate-800/80 border border-slate-700/80 rounded-xl py-2.5 px-4 text-white text-sm focus:outline-none focus:border-emerald-500"
+  />
+</div>
+{/* Turf Selection */}
           <div>
             <label className="block text-xs font-semibold uppercase text-slate-400 mb-1">
               Select Turf

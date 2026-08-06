@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import CreateRequirementModal from "../components/matchmaking/CreateRequirementModal";
 import ManageTeamModal from "../components/matchmaking/ManageTeamModal";
 import ViewRosterModal from "../components/matchmaking/ViewRosterModal";
+import useMatchmaking from "../hooks/useMatchmaking";
 
 const MatchmakingFeed = () => {
   const [posts, setPosts] = useState([]);
@@ -104,7 +105,7 @@ const MatchmakingFeed = () => {
       // Clear local notification cache so updated notifications generate freshly
       localStorage.removeItem("PlayRizon-user-notifications-v1");
 
-      alert("Successfully joined the team!");
+    alert("You're in! You have successfully joined the team.");
       fetchPosts();
     } catch (err) {
       alert(err.response?.data?.message || "Could not join team.");
@@ -116,16 +117,18 @@ const MatchmakingFeed = () => {
       {/* Header Banner */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 border-b pb-4 border-base-300">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight">Find Teams & Players</h1>
+          <h1 className="text-3xl font-extrabold tracking-tight">
+    Find Players
+</h1>
           <p className="text-sm opacity-70 mt-1">
-            Join an existing team looking for players or post a requirement for your own match!
+            Find teams looking for players or create your own player requirement.
           </p>
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
           className="btn btn-primary font-semibold shadow-md"
         >
-          + Need Players for My Team
+         + Create Requirement
         </button>
       </div>
 
@@ -230,7 +233,7 @@ const MatchmakingFeed = () => {
                       disabled={spotsRemaining <= 0}
                       className="btn btn-primary btn-sm"
                     >
-                      {spotsRemaining <= 0 ? "Match Full" : "Join Team"}
+                    {spotsRemaining <= 0 ? "Match Full" : "I'm Interested"}
                     </button>
                   )}
                 </div>

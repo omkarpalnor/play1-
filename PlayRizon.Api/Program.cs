@@ -95,6 +95,7 @@ builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<ITournamentRepository, TournamentRepository>();
 builder.Services.AddScoped<ITournamentService, TournamentService>();
+builder.Services.AddScoped<IPlayerRequirementRepository, PlayerRequirementRepository>();
 builder.Services.AddScoped<
     ITournamentRegistrationRepository,
     TournamentRegistrationRepository>();
