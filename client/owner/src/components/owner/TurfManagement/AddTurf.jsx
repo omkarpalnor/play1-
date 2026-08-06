@@ -1,4 +1,11 @@
+
+import { useState } from "react";
 import DatePicker from "react-datepicker";
+import {
+  GoogleMap,
+  MarkerF,
+  useJsApiLoader,
+} from "@react-google-maps/api";
 import "react-datepicker/dist/react-datepicker.css";
 import { Controller } from "react-hook-form";
 import { setHours, setMinutes } from "date-fns";
@@ -7,6 +14,14 @@ import useAddTurf from "@hooks/owner/useAddTurf";
 import { TURF_CATEGORY_OPTIONS } from "@utils/turfCategories";
 
 const AddTurf = () => {
+  const { isLoaded } = useJsApiLoader({
+  googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAP_KEY,
+});
+
+const [selectedLocation, setSelectedLocation] = useState({
+  lat: 18.5204,
+  lng: 73.8567,
+});
   const {
     register,
     handleSubmit,
@@ -65,6 +80,45 @@ const AddTurf = () => {
               error={errors.location}
               placeholder="Kakkanad, Kochi"
             />
+            {isLoaded && (
+  <div className="mt-4">
+    <label className="modern-form-label">Select Turf Location</label>
+
+    <GoogleMap
+      mapContainerStyle={{
+        width: "100%",
+        height: "300px",
+      }}
+      center={selectedLocation}
+      zoom={15}
+      onClick={(e) => {
+        const lat = e.latLng.lat();
+        const lng = e.latLng.lng();
+
+        setSelectedLocation({
+          lat,
+          lng,
+        });
+
+        setValue("latitude", lat);
+        setValue("longitude", lng);
+        console.log("Latitude:", lat);
+console.log("Longitude:", lng);
+      }}
+    >
+      <MarkerF position={selectedLocation} />
+    </GoogleMap>
+    <input
+  type="hidden"
+  {...register("latitude")}
+ />
+
+<input
+  type="hidden"
+  {...register("longitude")}
+/>
+  </div>
+)}
 
             <FormField
               label="Price Per Hour"

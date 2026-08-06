@@ -26,6 +26,7 @@ import TournamentList from "./components/tournament/TournamentList.jsx";
 import TournamentDetails from "./components/tournament/TournamentDetails.jsx";
 import TournamentRegistration from "./components/tournament/TournamentRegistration.jsx";
 import MyTournament from "./components/tournament/MyTournament.jsx";
+import NearbyTurfs from "./pages/NearbyTurfs";
 
 // 1. Import Matchmakingfeed
 import MatchmakingFeed from "./pages/MatchmakingFeed";
@@ -68,6 +69,7 @@ const router = createBrowserRouter([
         path: "turf/:id",
         element: <TurfDetails />,
       },
+      
       {
         path: "login",
         element: <Login />,
@@ -118,6 +120,10 @@ const router = createBrowserRouter([
         element: <Turf />,
       },
       {
+    path: "nearby",
+    element: <NearbyTurfs />,
+},
+      {
         path: "turf/:id",
         element: <TurfDetails />,
       },
@@ -156,6 +162,10 @@ const router = createBrowserRouter([
         path: "turf/:id",
         element: <TurfDetails />,
       },
+      {
+    path: "nearby",
+    element: <NearbyTurfs />,
+},
 
       {
         path: "reserve/:id",

@@ -46,6 +46,9 @@ const Navbar = () => {
               <Link to="/turfs">turf</Link>
             </li>
             <li>
+    <Link to="/nearby">Nearby Turfs</Link>
+</li>
+            <li>
               <Link to="/matchmaking">Find Teams</Link>
             </li>
             <li>
@@ -93,6 +96,9 @@ const Navbar = () => {
           <li>
             <Link to="/turfs">Arenas</Link>
           </li>
+          <li>
+    <Link to="/nearby">Nearby Turfs</Link>
+</li>
           <li>
             <Link to="/matchmaking">Find Teams</Link>
           </li>

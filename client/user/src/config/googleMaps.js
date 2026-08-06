@@ -1,0 +1,2 @@
+export const GOOGLE_MAPS_API_KEY =
+  import.meta.env.VITE_GOOGLE_MAP_KEY=AIzaSyAKQ3cDsSaG8Ccyqc5mu97PC6z4yp0wsVo

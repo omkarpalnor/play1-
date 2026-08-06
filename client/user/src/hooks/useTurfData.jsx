@@ -13,27 +13,51 @@ const useTurfData = () => {
       try {
         dispatch(setLoading(true));
 
-        // Change this endpoint if you create another public endpoint later
-const response = await axiosInstance.get("/api/Turf");
+        const response = await axiosInstance.get("/api/Turf");
+
+        console.log("API Response:", response.data);
+
         const mappedTurfs = response.data.map((turf) => ({
-  id: turf.id,
-  _id: turf.id,
-  name: turf.name,
-  description: turf.description ?? "",
-  image: turf.imageUrl || "/banner-1.png",
-  sportTypes: [turf.sport],
-  location: turf.address,
-  pricePerHour: turf.pricePerHour,
-  openTime: turf.openTime,
-  closeTime: turf.closeTime,
-  latitude: turf.latitude,
-  longitude: turf.longitude,
-  isAvailable: turf.isAvailable,
-}));
+          id: turf.id,
+          _id: turf.id,
+
+          name: turf.name,
+          description: turf.description ?? "",
+
+          image: turf.imageUrl
+            ? `http://localhost:5000${turf.imageUrl}`
+            : "/banner-1.png",
+
+          sport: turf.sport,
+          sportTypes: [turf.sport],
+
+          address: turf.address,
+          location: turf.address,
+
+          price: turf.pricePerHour,
+          pricePerHour: turf.pricePerHour,
+
+          rating: 4.5, // Temporary for CDAC project
+          distance: 0, // Temporary
+
+          latitude: Number(turf.latitude),
+          longitude: Number(turf.longitude),
+
+          openTime: turf.openTime,
+          closeTime: turf.closeTime,
+
+          isAvailable: turf.isAvailable,
+        }));
+
+        console.log("Mapped Turfs:", mappedTurfs);
 
         dispatch(setTurfs(mappedTurfs));
       } catch (err) {
-        dispatch(setError(err.response?.data?.message || err.message));
+        console.error(err);
+
+        dispatch(
+          setError(err.response?.data?.message || err.message)
+        );
       } finally {
         dispatch(setLoading(false));
       }
